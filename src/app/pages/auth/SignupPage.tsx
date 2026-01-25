@@ -19,7 +19,8 @@ export function SignupPage() {
 
   const handleGoogleSignUp = () => {
     // Redirect to backend Google OAuth with role parameter
-    window.location.href = `http://localhost:5000/api/auth/google?role=${role}`;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    window.location.href = `${apiUrl}/auth/google?role=${role}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
