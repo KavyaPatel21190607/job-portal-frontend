@@ -16,7 +16,8 @@ export function LoginPage() {
 
   const handleGoogleSignIn = () => {
     // Redirect to backend Google OAuth
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    window.location.href = `${apiUrl}/auth/google`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
