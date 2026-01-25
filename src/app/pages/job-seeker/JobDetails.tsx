@@ -203,45 +203,62 @@ export function JobDetails() {
       </Card>
 
       {/* Requirements */}
-      {(job.requirements || job.requiredSkills || job.skills) && (
+      <Card>
+        <CardHeader>
+          <CardTitle>Requirements</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {job.requirements && (
+            <>
+              {Array.isArray(job.requirements) ? (
+                <ul className="space-y-2 mb-4">
+                  {job.requirements.map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span className="text-gray-700">{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-700 whitespace-pre-line leading-relaxed mb-4">{job.requirements}</p>
+              )}
+            </>
+          )}
+          
+          {(job.requiredSkills || job.skills) && (job.requiredSkills || job.skills || []).length > 0 && (
+            <>
+              {job.requirements && <Separator className="my-4" />}
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Required Skills</h3>
+                <div className="flex flex-wrap gap-2">
+                  {(job.requiredSkills || job.skills || []).map((skill, idx) => (
+                    <Badge key={idx} variant="outline" className="text-sm py-1 px-3">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Responsibilities */}
+      {job.responsibilities && job.responsibilities.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Requirements</CardTitle>
+            <CardTitle>Responsibilities</CardTitle>
           </CardHeader>
           <CardContent>
-            {job.requirements && (
-              <>
-                {Array.isArray(job.requirements) ? (
-                  <ul className="space-y-2 mb-4">
-                    {job.requirements.map((req, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1">•</span>
-                        <span className="text-gray-700">{req}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-700 whitespace-pre-line leading-relaxed mb-4">{job.requirements}</p>
-                )}
-              </>
-            )}
-            
-            {(job.requiredSkills || job.skills) && (
-              <>
-                {job.requirements && <Separator className="my-4" />}
-                
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Required Skills</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {(job.requiredSkills || job.skills || []).map((skill, idx) => (
-                      <Badge key={idx} variant="outline" className="text-sm py-1 px-3">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
+            <ul className="space-y-2">
+              {job.responsibilities.map((responsibility, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-blue-600 mt-1">•</span>
+                  <span className="text-gray-700">{responsibility}</span>
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       )}
