@@ -90,7 +90,13 @@ export async function encryptMessage(message: string, publicKeyString: string): 
 export async function decryptMessage(encryptedMessage: string, privateKeyString: string): Promise<string> {
   try {
     console.log('Decrypting message, encrypted length:', encryptedMessage.length);
-    console.log('Private key (first 50 chars):', privateKeyString.substring(0, 50));
+    console.log('Private key exists:', !!privateKeyString);
+    
+    if (!privateKeyString) {
+      console.warn('No private key available for decryption');
+      return '[Unable to decrypt - please log out and log back in to reset encryption]';
+    }
+    
     const privateKey = await importKey(privateKeyString, 'private');
     const encryptedBytes = new Uint8Array(
       atob(encryptedMessage).split('').map(c => c.charCodeAt(0))
@@ -103,12 +109,11 @@ export async function decryptMessage(encryptedMessage: string, privateKeyString:
     );
     
     const decryptedText = new TextDecoder().decode(decrypted);
-    console.log('Decryption successful, message:', decryptedText);
+    console.log('Decryption successful');
     return decryptedText;
   } catch (error) {
     console.error('Decryption error details:', error);
-    console.error('Encrypted message (first 100 chars):', encryptedMessage.substring(0, 100));
-    return '[Encrypted message - unable to decrypt]';
+    return '[Unable to decrypt - encryption keys may have changed. Please log out and log back in]';
   }
 }
 
