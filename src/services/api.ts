@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 // Base URL for the backend API
+console.log("🚨 VERCEL ENV API =", import.meta.env.VITE_API_URL);
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Create axios instance with default config
@@ -70,4 +72,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
 
