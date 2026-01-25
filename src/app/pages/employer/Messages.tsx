@@ -63,7 +63,8 @@ export function EmployerMessages() {
         } else {
           // No existing conversation - fetch user details to start new conversation
           try {
-            const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const response = await fetch(`${apiUrl}/users/${userId}`, {
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
               }
