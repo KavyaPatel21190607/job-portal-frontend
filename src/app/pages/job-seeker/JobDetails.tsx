@@ -36,6 +36,10 @@ export function JobDetails() {
     try {
       setLoading(true);
       const response = await jobService.getJobById(jobId!);
+      console.log('Job Details:', response);
+      console.log('Requirements:', response.requirements);
+      console.log('Responsibilities:', response.responsibilities);
+      console.log('Benefits:', response.benefits);
       setJob(response);
       setError('');
     } catch (err: any) {
