@@ -88,13 +88,15 @@ export async function encryptMessage(message: string, publicKeyString: string): 
  * Decrypt a message with own private key
  */
 export async function decryptMessage(encryptedMessage: string, privateKeyString: string): Promise<string> {
+  // If message looks unencrypted (doesn't start with base64 pattern), return as-is
+  if (!encryptedMessage || encryptedMessage.length < 50 || !/^[A-Za-z0-9+/=]+$/.test(encryptedMessage)) {
+    return encryptedMessage;
+  }
+
   try {
-    console.log('Decrypting message, encrypted length:', encryptedMessage.length);
-    console.log('Private key exists:', !!privateKeyString);
-    
     if (!privateKeyString) {
       console.warn('No private key available for decryption');
-      return '[Unable to decrypt - please log out and log back in to reset encryption]';
+      return '🔒 [Encrypted - Key not available]';
     }
     
     const privateKey = await importKey(privateKeyString, 'private');
@@ -109,11 +111,10 @@ export async function decryptMessage(encryptedMessage: string, privateKeyString:
     );
     
     const decryptedText = new TextDecoder().decode(decrypted);
-    console.log('Decryption successful');
     return decryptedText;
   } catch (error) {
-    console.error('Decryption error details:', error);
-    return '[Unable to decrypt - encryption keys may have changed. Please log out and log back in]';
+    // Different encryption keys (e.g., localhost vs production)
+    return '🔒 [Message encrypted with different key]';
   }
 }
 
