@@ -10,6 +10,7 @@ import authService from '@/services/authService';
 import encryptionService from '@/services/encryptionService';
 import { encryptMessage, decryptMessage, getPrivateKey } from '@/lib/encryption';
 import { useEncryption } from '@/hooks/useEncryption';
+import api from '@/services/api';
 
 export function JobSeekerMessages() {
   const [searchParams] = useSearchParams();
@@ -61,28 +62,21 @@ export function JobSeekerMessages() {
         } else {
           // No existing conversation - fetch user details to start new conversation
           try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            const response = await fetch(`${apiUrl}/users/${userId}`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-              }
-            });
-            if (response.ok) {
-              const userData = await response.json();
-              // Create a temporary conversation object for the new conversation
-              const tempConversation: Conversation = {
-                user: {
-                  _id: userData.data._id,
-                  name: userData.data.name,
-                  email: userData.data.email,
-                  profilePicture: userData.data.profilePicture,
-                  role: userData.data.role
-                },
-                lastMessage: null as any,
-                unreadCount: 0
-              };
-              setSelectedConversation(tempConversation);
-            }
+            const response = await api.get(`/users/${userId}`);
+            const userData = response.data;
+            // Create a temporary conversation object for the new conversation
+            const tempConversation: Conversation = {
+              user: {
+                _id: userData.data._id,
+                name: userData.data.name,
+                email: userData.data.email,
+                profilePicture: userData.data.profilePicture,
+                role: userData.data.role
+              },
+              lastMessage: null as any,
+              unreadCount: 0
+            };
+            setSelectedConversation(tempConversation);
           } catch (err) {
             console.error('Failed to fetch user details:', err);
           }
@@ -265,14 +259,16 @@ export function JobSeekerMessages() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <p className="font-semibold text-sm truncate">{conv.user.name}</p>
-                        <span className="text-xs text-gray-500">
-                          {new Date(conv.lastMessage.createdAt).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })}
-                        </span>
+                        {conv.lastMessage && (
+                          <span className="text-xs text-gray-500">
+                            {new Date(conv.lastMessage.createdAt).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </span>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600 truncate">{conv.lastMessage.content}</p>
+                      <p className="text-sm text-gray-600 truncate">{conv.lastMessage?.content || 'No messages yet'}</p>
                     </div>
                     {conv.unreadCount > 0 && (
                       <div className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
