@@ -137,17 +137,7 @@ export function LoginPage() {
               </Link>
             </div>
 
-            <div className="pt-4 border-t">
-              <p className="text-xs text-center text-gray-500 mb-3">Demo Credentials:</p>
-              <div className="space-y-2 text-xs">
-                <div className="bg-blue-50 p-2 rounded">
-                  <strong>Job Seeker:</strong> seeker@example.com / password123
-                </div>
-                <div className="bg-purple-50 p-2 rounded">
-                  <strong>Employer:</strong> employer@example.com / password123
-                </div>
-              </div>
-            </div>
+
           </form>
         </CardContent>
       </Card>
