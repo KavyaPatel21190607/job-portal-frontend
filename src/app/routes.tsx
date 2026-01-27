@@ -27,28 +27,34 @@ import { EmployerLayout } from '@/app/layouts/EmployerLayout';
 // Protected Route Wrapper
 import { ProtectedRoute } from '@/app/components/ProtectedRoute';
 import { NotFound } from '@/app/pages/NotFound';
+import { RouteErrorBoundary } from '@/app/components/RouteErrorBoundary';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: LandingPage,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/login',
     Component: LoginPage,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/signup',
     Component: SignupPage,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/auth/callback',
     Component: OAuthCallback,
+    errorElement: <RouteErrorBoundary />,
   },
   // Job Seeker Routes - Completely separate
   {
     path: '/job-seeker',
     element: <ProtectedRoute allowedRole="job_seeker"><JobSeekerLayout /></ProtectedRoute>,
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <Navigate to="/job-seeker/dashboard" replace /> },
       { path: 'dashboard', Component: JobSeekerDashboard },
@@ -63,6 +69,7 @@ export const router = createBrowserRouter([
   // Employer Routes - Completely separate
   {
     path: '/employer',
+    errorElement: <RouteErrorBoundary />,
     element: <ProtectedRoute allowedRole="employer"><EmployerLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <Navigate to="/employer/dashboard" replace /> },
@@ -75,6 +82,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
+    errorElement: <RouteErrorBoundary />,
     Component: NotFound,
   },
 ]);
