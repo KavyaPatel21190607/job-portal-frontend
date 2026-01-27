@@ -44,9 +44,9 @@ export function MyApplications() {
 
   const getFilteredApplications = (status?: string) => {
     if (!status) return applications;
-    // Handle 'accepted' tab to show both 'accepted' and 'hired' statuses
+    // Handle 'accepted' tab to show 'hired' status
     if (status === 'accepted') {
-      return applications.filter(app => app.status === 'accepted' || app.status === 'hired');
+      return applications.filter(app => app.status === 'hired');
     }
     return applications.filter(app => app.status === status);
   };
@@ -60,7 +60,10 @@ export function MyApplications() {
   const handleMessage = (application: Application) => {
     if (!application.job) return;
     // Navigate to messages with the employer
-    navigate(`/job-seeker/messages?user=${application.job.employer}`);
+    const employerId = (application.job as any).employer;
+    if (employerId) {
+      navigate(`/job-seeker/messages?user=${employerId}`);
+    }
   };
 
   const ApplicationCard = ({ app }: { app: Application }) => {
@@ -102,46 +105,47 @@ export function MyApplications() {
 
     return (
       <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-lg mb-1">{app.job.title}</CardTitle>
-              <p className="text-gray-600">{app.job.companyName}</p>
+        <CardHeader className="pb-3 sm:pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg mb-1 truncate">{app.job.title}</CardTitle>
+              <p className="text-sm sm:text-base text-gray-600 truncate">{app.job.companyName}</p>
             </div>
-            <Badge className={statusConfig[app.status as keyof typeof statusConfig].color}>
+            <Badge className={`${statusConfig[app.status as keyof typeof statusConfig].color} text-xs whitespace-nowrap self-start sm:self-auto`}>
               {statusConfig[app.status as keyof typeof statusConfig].label}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
             <div>
-              <p className="text-sm text-gray-500">Applied Date</p>
-              <p className="font-medium">
+              <p className="text-xs sm:text-sm text-gray-500">Applied Date</p>
+              <p className="font-medium text-sm sm:text-base">
                 {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'N/A'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">ATS Score</p>
-              <p className="font-medium">
+              <p className="text-xs sm:text-sm text-gray-500">ATS Score</p>
+              <p className="font-medium text-sm sm:text-base">
                 <span className={app.atsScore >= 80 ? 'text-green-600' : app.atsScore >= 60 ? 'text-yellow-600' : 'text-red-600'}>
                   {app.atsScore}/100
                 </span>
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => handleViewApplication(app)}
+              className="text-xs sm:text-sm"
             >
-              <FileText className="w-4 h-4 mr-2" />
-              View Application
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              View
             </Button>
             {app.status === 'interview' && (
-              <Button variant="outline" size="sm">
-                <Calendar className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Schedule
               </Button>
             )}
@@ -149,8 +153,9 @@ export function MyApplications() {
               variant="outline" 
               size="sm"
               onClick={() => handleMessage(app)}
+              className="text-xs sm:text-sm"
             >
-              <MessageSquare className="w-4 h-4 mr-2" />
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Message
             </Button>
           </div>
@@ -162,8 +167,8 @@ export function MyApplications() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl mb-2 text-gray-900">My Applications</h1>
-        <p className="text-gray-600">Track all your job applications in one place</p>
+        <h1 className="text-2xl sm:text-3xl mb-2 text-gray-900">My Applications</h1>
+        <p className="text-sm sm:text-base text-gray-600">Track all your job applications in one place</p>
       </div>
 
       {loading && (
@@ -182,13 +187,13 @@ export function MyApplications() {
 
       {!loading && !error && (
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="all">All ({applications.length})</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
-            <TabsTrigger value="interview">Interview</TabsTrigger>
-            <TabsTrigger value="accepted">Accepted</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 gap-1">
+            <TabsTrigger value="all" className="text-xs sm:text-sm px-1 sm:px-3">All ({applications.length})</TabsTrigger>
+            <TabsTrigger value="pending" className="text-xs sm:text-sm px-1 sm:px-3">Pending</TabsTrigger>
+            <TabsTrigger value="reviewed" className="text-xs sm:text-sm px-1 sm:px-3">Reviewed</TabsTrigger>
+            <TabsTrigger value="interview" className="text-xs sm:text-sm px-1 sm:px-3">Interview</TabsTrigger>
+            <TabsTrigger value="accepted" className="text-xs sm:text-sm px-1 sm:px-3">Accepted</TabsTrigger>
+            <TabsTrigger value="rejected" className="text-xs sm:text-sm px-1 sm:px-3">Rejected</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="space-y-4 mt-6">
