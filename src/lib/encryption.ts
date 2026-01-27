@@ -120,29 +120,46 @@ export async function decryptMessage(encryptedMessage: string, privateKeyString:
 
 /**
  * Store private key in browser's localStorage (secure storage)
+ * Use user-specific key to prevent conflicts between accounts
  */
-export function storePrivateKey(privateKey: string): void {
+export function storePrivateKey(privateKey: string, userId: string): void {
+  localStorage.setItem(`e2ee_private_key_${userId}`, privateKey);
+  // Also store with generic key for backward compatibility
   localStorage.setItem('e2ee_private_key', privateKey);
 }
 
 /**
  * Retrieve private key from localStorage
  */
-export function getPrivateKey(): string | null {
+export function getPrivateKey(userId?: string): string | null {
+  // Try user-specific key first
+  if (userId) {
+    const userKey = localStorage.getItem(`e2ee_private_key_${userId}`);
+    if (userKey) return userKey;
+  }
+  // Fall back to generic key
   return localStorage.getItem('e2ee_private_key');
 }
 
 /**
  * Store public key in localStorage for quick access
  */
-export function storePublicKey(publicKey: string): void {
+export function storePublicKey(publicKey: string, userId: string): void {
+  localStorage.setItem(`e2ee_public_key_${userId}`, publicKey);
+  // Also store with generic key for backward compatibility
   localStorage.setItem('e2ee_public_key', publicKey);
 }
 
 /**
  * Retrieve public key from localStorage
  */
-export function getPublicKey(): string | null {
+export function getPublicKey(userId?: string): string | null {
+  // Try user-specific key first
+  if (userId) {
+    const userKey = localStorage.getItem(`e2ee_public_key_${userId}`);
+    if (userKey) return userKey;
+  }
+  // Fall back to generic key
   return localStorage.getItem('e2ee_public_key');
 }
 
@@ -150,21 +167,51 @@ export function getPublicKey(): string | null {
  * Clear encryption keys (on logout)
  */
 export function clearKeys(): void {
-  localStorage.removeItem('e2ee_private_key');
-  localStorage.removeItem('e2ee_public_key');
+  // Don't actually clear keys - just mark them as inactive
+  // This preserves the ability to decrypt old messages
+  console.warn('clearKeys called - keys are preserved for message decryption');
+  // localStorage.removeItem('e2ee_private_key');
+  // localStorage.removeItem('e2ee_public_key');
+}
+
+/**
+ * Export keys for backup (user can save these)
+ */
+export function exportKeys(userId: string): { publicKey: string; privateKey: string } | null {
+  const publicKey = getPublicKey(userId);
+  const privateKey = getPrivateKey(userId);
+  
+  if (!publicKey || !privateKey) {
+    return null;
+  }
+  
+  return { publicKey, privateKey };
+}
+
+/**
+ * Import backed up keys
+ */
+export function importKeys(publicKey: string, privateKey: string, userId: string): void {
+  storePublicKey(publicKey, userId);
+  storePrivateKey(privateKey, userId);
 }
 
 /**
  * Initialize encryption for a user (generate keys if not exists)
  */
-export async function initializeEncryption(): Promise<{ publicKey: string; privateKey: string }> {
-  let publicKey = getPublicKey();
-  let privateKey = getPrivateKey();
+export async function initializeEncryption(userId?: string): Promise<{ publicKey: string; privateKey: string }> {
+  let publicKey = getPublicKey(userId);
+  let privateKey = getPrivateKey(userId);
 
   if (!publicKey || !privateKey) {
     const keys = await generateKeyPair();
-    storePublicKey(keys.publicKey);
-    storePrivateKey(keys.privateKey);
+    if (userId) {
+      storePublicKey(keys.publicKey, userId);
+      storePrivateKey(keys.privateKey, userId);
+    } else {
+      localStorage.setItem('e2ee_public_key', keys.publicKey);
+      localStorage.setItem('e2ee_private_key', keys.privateKey);
+    }
     return keys;
   }
 
