@@ -8,7 +8,8 @@ export function EmployerLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = authService.getStoredUser();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Closed by default on mobile
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await authService.logout();
@@ -26,43 +27,64 @@ export function EmployerLayout() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-xl text-gray-900">Employer Portal</h1>
-                <p className="text-sm text-gray-500">Manage your hiring process</p>
+                <h1 className="font-bold text-base sm:text-xl text-gray-900">Employer Portal</h1>
+                <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Manage your hiring process</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm text-gray-600">Company Account</p>
-                <p className="font-semibold text-gray-900">{user?.name}</p>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="text-right hidden md:block">
+                <p className="text-xs sm:text-sm text-gray-600">Company Account</p>
+                <p className="font-semibold text-sm sm:text-base text-gray-900">{user?.name}</p>
               </div>
-              <Button onClick={handleLogout} variant="outline" size="sm">
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+              <Button onClick={handleLogout} variant="outline" size="sm" className="text-xs sm:text-sm">
+                <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        
+        <div className="flex gap-4 lg:gap-6 relative">
           {/* Sidebar Navigation */}
           <aside
-            className={`transition-all duration-300 ease-in-out ${
-              sidebarOpen ? 'w-60' : 'w-16'
-            } flex-shrink-0`}
+            className={`
+              fixed lg:static inset-y-0 left-0 z-50 lg:z-auto
+              transition-transform duration-300 ease-in-out
+              ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+              ${sidebarOpen ? 'w-64' : 'w-16 hidden lg:block'}
+              lg:flex-shrink-0
+            `}
           >
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-full">
-              {/* Toggle Button */}
-              <div className="p-4 border-b border-gray-100">
+            <div className="bg-white rounded-none lg:rounded-xl shadow-lg lg:shadow-sm border-r lg:border border-gray-100 h-full min-h-screen lg:min-h-0">
+              {/* Toggle Button - Desktop Only */}
+              <div className="p-4 border-b border-gray-100 hidden lg:block">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -72,6 +94,20 @@ export function EmployerLayout() {
                   {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                   {sidebarOpen && <span className="ml-2">Collapse</span>}
                 </Button>
+              </div>
+              
+              {/* Mobile Header */}
+              <div className="p-4 border-b border-gray-100 lg:hidden">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-gray-900">Menu</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
 
               {/* Navigation Items */}
@@ -100,7 +136,7 @@ export function EmployerLayout() {
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 min-h-[600px]">
+          <main className="flex-1 min-w-0 w-full lg:w-auto">
             <Outlet />
           </main>
         </div>
