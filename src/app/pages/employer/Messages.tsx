@@ -228,7 +228,7 @@ export function EmployerMessages() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl mb-2 text-gray-900">Messages</h1>
+        <h1 className="text-2xl sm:text-3xl mb-2 text-gray-900">Messages</h1>
         <p className="text-gray-600">Communicate with candidates</p>
       </div>
 
