@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
-import { Briefcase, Users, Eye, CheckCircle, TrendingUp, Plus, Loader2 } from 'lucide-react';
+import { Briefcase, Users, Eye, CheckCircle, Plus, Loader2 } from 'lucide-react';
 import { Link } from 'react-router';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import dashboardService from '@/services/dashboardService';
-
-const COLORS = ['#9ca3af', '#fbbf24', '#a855f7', '#22c55e'];
 
 export function EmployerDashboard() {
   const [dashboardData, setDashboardData] = useState<any>(null);
@@ -52,7 +49,6 @@ export function EmployerDashboard() {
   const activeJobs = dashboardData?.activeJobs || 0;
   const totalApplications = dashboardData?.totalApplications || 0;
   const recentApplications = dashboardData?.recentApplications || [];
-  const topJobs = dashboardData?.topJobs || [];
 
   return (
     <div className="space-y-6">
@@ -168,10 +164,11 @@ export function EmployerDashboard() {
           <div className="space-y-4">
             {recentApplications && recentApplications.length > 0 ? (
               recentApplications.map((app: any) => (
+                app?.jobSeeker && app?.job ? (
                 <div key={app._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium">{app.jobSeeker.name}</p>
-                    <p className="text-sm text-gray-500">{app.job.title}</p>
+                    <p className="font-medium">{app.jobSeeker?.name || 'Unknown'}</p>
+                    <p className="text-sm text-gray-500">{app.job?.title || 'Untitled Position'}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
@@ -190,6 +187,7 @@ export function EmployerDashboard() {
                     </Link>
                   </div>
                 </div>
+                ) : null
               ))
             ) : (
               <p className="text-center text-gray-500 py-8">No recent applications</p>
