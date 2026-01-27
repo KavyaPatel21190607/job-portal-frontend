@@ -14,7 +14,7 @@ export function JobSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [jobType, setJobType] = useState('all');
   const [workType, setWorkType] = useState('all');
-  const [experienceLevel, setExperienceLevel] = useState('all');
+  const [experienceLevel] = useState('all');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,7 +56,7 @@ export function JobSearch() {
     }
   };
 
-  const formatSalary = (min: number, max: number, currency: string) => {
+  const formatSalary = (min: number, max: number) => {
     return `₹ ${(min / 100000).toFixed(1)} - ${(max / 100000).toFixed(1)} LPA`;
   };
 
@@ -73,23 +73,23 @@ export function JobSearch() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2 text-gray-900">Find Jobs</h1>
-        <p className="text-gray-600">Discover opportunities that match your skills</p>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 text-gray-900">Find Jobs</h1>
+        <p className="text-sm sm:text-base text-gray-600">Discover opportunities that match your skills</p>
       </div>
 
       {/* Search and Filters */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="relative md:col-span-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="relative sm:col-span-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <Input
                 placeholder="Search by title, company, or skills..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-9 sm:pl-10 text-sm sm:text-base"
               />
             </div>
             <Select value={jobType} onValueChange={setJobType}>
@@ -149,51 +149,53 @@ export function JobSearch() {
           ) : (
             jobs.filter(job => job != null).map((job) => (
               <Card key={job._id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-xl mb-1">{job.title}</CardTitle>
-                      <p className="text-gray-600 font-medium">{job.companyName}</p>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-lg sm:text-xl mb-1 truncate">{job.title}</CardTitle>
+                      <p className="text-gray-600 font-medium text-sm sm:text-base truncate">{job.companyName}</p>
                     </div>
-                    <div className="flex gap-2">
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                    <div className="flex gap-2 flex-wrap">
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
                         {job.jobType}
                       </Badge>
-                      <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
                         {job.workType}
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                     <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{job.location}</span>
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{job.location}</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
-                      <DollarSign className="w-4 h-4" />
-                      <span className="text-sm">
-                        {formatSalary(job.salaryRange.min, job.salaryRange.max, job.salaryRange.currency)}
+                      <DollarSign className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">
+                        {formatSalary(job.salaryRange.min, job.salaryRange.max)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="w-4 h-4" />
-                      <span className="text-sm">{formatDate(job.createdAt)}</span>
+                      <Clock className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">{formatDate(job.createdAt)}</span>
                     </div>
                   </div>
-                  <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
+                  <p className="text-gray-700 mb-4 line-clamp-2 text-sm sm:text-base">{job.description}</p>
+                  {job.requiredSkills && job.requiredSkills.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {job.requiredSkills.slice(0, 5).map((skill, idx) => (
-                      <Badge key={idx} variant="outline">{skill}</Badge>
+                      <Badge key={idx} variant="outline" className="text-xs">{skill}</Badge>
                     ))}
                     {job.requiredSkills.length > 5 && (
-                      <Badge variant="outline">+{job.requiredSkills.length - 5} more</Badge>
+                      <Badge variant="outline" className="text-xs">+{job.requiredSkills.length - 5} more</Badge>
                     )}
                   </div>
-                  <div className="flex gap-3">
+                  )}
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button 
-                      className="bg-blue-600 hover:bg-blue-700"
+                      className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto text-sm"
                       onClick={() => handleApply(job._id)}
                       disabled={applyingJobId === job._id}
                     >
@@ -212,6 +214,7 @@ export function JobSearch() {
                     <Button 
                       variant="outline"
                       onClick={() => navigate(`/job-seeker/jobs/${job._id}`)}
+                      className="w-full sm:w-auto text-sm"
                     >
                       View Details
                     </Button>
