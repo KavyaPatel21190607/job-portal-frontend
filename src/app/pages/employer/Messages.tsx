@@ -330,7 +330,7 @@ export function EmployerMessages() {
               {messages.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">No messages yet. Start the conversation!</p>
               ) : (
-                messages.map((msg) => (
+                messages.filter(msg => msg?.sender && msg?.receiver).map((msg) => (
                   <div
                     key={msg._id}
                     className={`flex ${msg.sender._id === currentUser?._id ? 'justify-end' : 'justify-start'}`}
