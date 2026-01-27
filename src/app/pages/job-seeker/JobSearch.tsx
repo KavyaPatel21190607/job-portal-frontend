@@ -147,7 +147,7 @@ export function JobSearch() {
               </CardContent>
             </Card>
           ) : (
-            jobs.map((job) => (
+            jobs.filter(job => job != null).map((job) => (
               <Card key={job._id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
