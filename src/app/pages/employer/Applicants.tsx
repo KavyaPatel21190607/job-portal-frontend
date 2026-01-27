@@ -113,13 +113,13 @@ export function Applicants() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl mb-2 text-gray-900">Applicants</h1>
-        <p className="text-gray-600">Review and manage job applications</p>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 text-gray-900">Applicants</h1>
+        <p className="text-sm sm:text-base text-gray-600">Review and manage job applications</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="relative">
@@ -181,50 +181,50 @@ export function Applicants() {
             filteredApplications.map((application) => (
               application?.jobSeeker && application?.job ? (
               <Card key={application._id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                      <Avatar className="w-12 h-12">
+                <CardHeader className="pb-3 sm:pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                      <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
                         {application.jobSeeker?.profilePicture ? (
                           <img src={application.jobSeeker.profilePicture} alt={application.jobSeeker?.name || 'User'} />
                         ) : (
-                          <AvatarFallback className="bg-purple-100 text-purple-600 text-lg">
+                          <AvatarFallback className="bg-purple-100 text-purple-600 text-sm sm:text-lg">
                             {application.jobSeeker?.name?.split(' ').map(n => n[0]).join('') || '?'}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      <div>
-                        <CardTitle className="text-lg mb-1">{application.jobSeeker?.name || 'Unknown'}</CardTitle>
-                        <p className="text-sm text-gray-600">{application.jobSeeker?.email || 'N/A'}</p>
+                      <div className="min-w-0 flex-1">
+                        <CardTitle className="text-base sm:text-lg mb-1 truncate">{application.jobSeeker?.name || 'Unknown'}</CardTitle>
+                        <p className="text-xs sm:text-sm text-gray-600 truncate">{application.jobSeeker?.email || 'N/A'}</p>
                         {application.jobSeeker?.phone && (
-                          <p className="text-sm text-gray-500">{application.jobSeeker.phone}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">{application.jobSeeker.phone}</p>
                         )}
                       </div>
                     </div>
-                    <Badge className={statusConfig[application.status].color}>
+                    <Badge className={`${statusConfig[application.status].color} text-xs whitespace-nowrap`}>
                       {statusConfig[application.status].label}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
                     <div>
-                      <p className="text-sm text-gray-500">Position</p>
-                      <p className="font-medium">{application.job?.title || 'Unknown Position'}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Position</p>
+                      <p className="font-medium text-sm sm:text-base truncate">{application.job?.title || 'Unknown Position'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Applied Date</p>
-                      <p className="font-medium">{new Date(application.createdAt).toLocaleDateString()}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Applied Date</p>
+                      <p className="font-medium text-sm sm:text-base">{new Date(application.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">ATS Score</p>
-                      <p className={`font-medium ${application.atsScore >= 85 ? 'text-green-600' : application.atsScore >= 70 ? 'text-yellow-600' : 'text-red-600'}`}>
+                      <p className="text-xs sm:text-sm text-gray-500">ATS Score</p>
+                      <p className={`font-medium text-sm sm:text-base ${application.atsScore >= 85 ? 'text-green-600' : application.atsScore >= 70 ? 'text-yellow-600' : 'text-red-600'}`}>
                         {application.atsScore}/100
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Experience</p>
-                      <p className="font-medium">{application.jobSeeker?.experience?.length || 0} years</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Experience</p>
+                      <p className="font-medium text-sm sm:text-base">{application.jobSeeker?.experience?.length || 0} years</p>
                     </div>
                   </div>
 
@@ -255,8 +255,9 @@ export function Applicants() {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleDownloadResume(application.resume)}
+                        className="text-xs sm:text-sm"
                       >
-                        <Download className="w-4 h-4 mr-2" />
+                        <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         Resume
                       </Button>
                     )}
@@ -265,8 +266,9 @@ export function Applicants() {
                       size="sm" 
                       variant="outline"
                       onClick={() => handleMessage(application)}
+                      className="text-xs sm:text-sm"
                     >
-                      <MessageSquare className="w-4 h-4 mr-2" />
+                      <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                       Message
                     </Button>
                     
@@ -275,14 +277,14 @@ export function Applicants() {
                         {application.status !== 'shortlisted' && (
                           <Button 
                             size="sm" 
-                            className="bg-yellow-600 hover:bg-yellow-700"
+                            className="bg-yellow-600 hover:bg-yellow-700 text-xs sm:text-sm"
                             onClick={() => handleStatusUpdate(application._id, 'shortlisted')}
                             disabled={updatingId === application._id}
                           >
                             {updatingId === application._id ? (
-                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                             ) : (
-                              <FileText className="w-4 h-4 mr-2" />
+                              <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                             )}
                             Shortlist
                           </Button>
@@ -290,14 +292,14 @@ export function Applicants() {
                         
                         <Button 
                           size="sm" 
-                          className="bg-green-600 hover:bg-green-700"
+                          className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm"
                           onClick={() => handleStatusUpdate(application._id, 'hired')}
                           disabled={updatingId === application._id}
                         >
                           {updatingId === application._id ? (
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                           ) : (
-                            <CheckCircle className="w-4 h-4 mr-2" />
+                            <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                           )}
                           Accept
                         </Button>
@@ -310,11 +312,12 @@ export function Applicants() {
                         variant="destructive"
                         onClick={() => handleStatusUpdate(application._id, 'rejected')}
                         disabled={updatingId === application._id}
+                        className="text-xs sm:text-sm"
                       >
                         {updatingId === application._id ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                         ) : (
-                          <XCircle className="w-4 h-4 mr-2" />
+                          <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         )}
                         Reject
                       </Button>
