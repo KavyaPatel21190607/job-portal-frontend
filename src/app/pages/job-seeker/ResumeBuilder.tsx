@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
 import { Textarea } from '@/app/components/ui/textarea';
-import { Download, Plus, FileText, X, Loader2 } from 'lucide-react';
+import { Download, Plus, X, Loader2 } from 'lucide-react';
 import authService from '@/services/authService';
 import jsPDF from 'jspdf';
 
@@ -213,7 +213,7 @@ export function ResumeBuilder() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl mb-2 text-gray-900">Resume Builder</h1>
+          <h1 className="text-2xl sm:text-3xl mb-2 text-gray-900">Resume Builder</h1>
           <p className="text-gray-600">Create an ATS-friendly resume</p>
         </div>
         <Button 
