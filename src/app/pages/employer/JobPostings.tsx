@@ -63,15 +63,15 @@ export function JobPostings() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
         <div>
-          <h1 className="text-3xl mb-2 text-gray-900">Job Postings</h1>
-          <p className="text-gray-600">Manage your job listings</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 text-gray-900">Job Postings</h1>
+          <p className="text-sm sm:text-base text-gray-600">Manage your job listings</p>
         </div>
-        <Button className="bg-purple-600 hover:bg-purple-700" onClick={handleCreateJob}>
+        <Button className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto" onClick={handleCreateJob}>
           <Plus className="w-4 h-4 mr-2" />
-          Create New Job
+          <span className="text-sm sm:text-base">Create New Job</span>
         </Button>
       </div>
 
