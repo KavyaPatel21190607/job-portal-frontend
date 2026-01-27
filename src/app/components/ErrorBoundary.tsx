@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/ca
 import { Button } from '@/app/components/ui/button';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
+
 interface Props {
   children: ReactNode;
 }
