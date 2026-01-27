@@ -107,7 +107,7 @@ export function JobPostings() {
               </CardContent>
             </Card>
           ) : (
-            jobs.map((job) => (
+            jobs.filter(job => job != null).map((job) => (
               <Card key={job._id}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
