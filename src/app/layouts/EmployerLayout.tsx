@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router';
 import authService from '@/services/authService';
 import { Button } from '@/app/components/ui/button';
-import { Building2, Briefcase, Users, Calendar, MessageSquare, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
+import { Building2, Briefcase, Users, MessageSquare, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
 
 export function EmployerLayout() {
   const navigate = useNavigate();
