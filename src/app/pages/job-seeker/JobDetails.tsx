@@ -62,7 +62,7 @@ export function JobDetails() {
     }
   };
 
-  const formatSalary = (min: number, max: number, currency: string) => {
+  const formatSalary = (min: number, max: number, _currency: string) => {
     return `₹ ${(min / 100000).toFixed(1)} - ${(max / 100000).toFixed(1)} LPA`;
   };
 
