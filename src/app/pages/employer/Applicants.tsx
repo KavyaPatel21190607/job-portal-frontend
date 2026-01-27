@@ -105,9 +105,11 @@ export function Applicants() {
   };
 
   const filteredApplications = applications.filter(app =>
-    app.jobSeeker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.jobSeeker.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.job.title.toLowerCase().includes(searchTerm.toLowerCase())
+    app?.jobSeeker && app?.job && (
+      app.jobSeeker?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.jobSeeker?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.job?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   return (
@@ -177,23 +179,24 @@ export function Applicants() {
             </Card>
           ) : (
             filteredApplications.map((application) => (
+              application?.jobSeeker && application?.job ? (
               <Card key={application._id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
                       <Avatar className="w-12 h-12">
-                        {application.jobSeeker.profilePicture ? (
-                          <img src={application.jobSeeker.profilePicture} alt={application.jobSeeker.name} />
+                        {application.jobSeeker?.profilePicture ? (
+                          <img src={application.jobSeeker.profilePicture} alt={application.jobSeeker?.name || 'User'} />
                         ) : (
                           <AvatarFallback className="bg-purple-100 text-purple-600 text-lg">
-                            {application.jobSeeker.name.split(' ').map(n => n[0]).join('')}
+                            {application.jobSeeker?.name?.split(' ').map(n => n[0]).join('') || '?'}
                           </AvatarFallback>
                         )}
                       </Avatar>
                       <div>
-                        <CardTitle className="text-lg mb-1">{application.jobSeeker.name}</CardTitle>
-                        <p className="text-sm text-gray-600">{application.jobSeeker.email}</p>
-                        {application.jobSeeker.phone && (
+                        <CardTitle className="text-lg mb-1">{application.jobSeeker?.name || 'Unknown'}</CardTitle>
+                        <p className="text-sm text-gray-600">{application.jobSeeker?.email || 'N/A'}</p>
+                        {application.jobSeeker?.phone && (
                           <p className="text-sm text-gray-500">{application.jobSeeker.phone}</p>
                         )}
                       </div>
@@ -207,7 +210,7 @@ export function Applicants() {
                   <div className="grid md:grid-cols-4 gap-4 mb-4">
                     <div>
                       <p className="text-sm text-gray-500">Position</p>
-                      <p className="font-medium">{application.job.title}</p>
+                      <p className="font-medium">{application.job?.title || 'Unknown Position'}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Applied Date</p>
@@ -221,11 +224,11 @@ export function Applicants() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Experience</p>
-                      <p className="font-medium">{application.jobSeeker.experience?.length || 0} years</p>
+                      <p className="font-medium">{application.jobSeeker?.experience?.length || 0} years</p>
                     </div>
                   </div>
 
-                  {application.jobSeeker.skills && application.jobSeeker.skills.length > 0 && (
+                  {application.jobSeeker?.skills && application.jobSeeker.skills.length > 0 && (
                     <div className="mb-4">
                       <p className="text-sm text-gray-500 mb-2">Skills</p>
                       <div className="flex flex-wrap gap-2">
@@ -319,6 +322,7 @@ export function Applicants() {
                   </div>
                 </CardContent>
               </Card>
+              ) : null
             ))
           )}
         </div>
