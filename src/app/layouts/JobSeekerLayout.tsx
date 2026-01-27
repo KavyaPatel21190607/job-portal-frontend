@@ -8,7 +8,6 @@ export function JobSeekerLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = authService.getStoredUser();
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Closed by default on mobile
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -79,24 +78,11 @@ export function JobSeekerLayout() {
               fixed lg:static inset-y-0 left-0 z-50 lg:z-auto
               transition-transform duration-300 ease-in-out
               ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-              ${sidebarOpen ? 'w-64' : 'w-16 hidden lg:block'}
+              w-64
               lg:flex-shrink-0
             `}
           >
             <div className="bg-white rounded-none lg:rounded-xl shadow-lg lg:shadow-sm border-r lg:border border-gray-100 h-full min-h-screen lg:min-h-0">
-              {/* Toggle Button - Desktop Only */}
-              <div className="p-4 border-b border-gray-100 hidden lg:block">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="w-full justify-start"
-                >
-                  {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                  {sidebarOpen && <span className="ml-2">Collapse</span>}
-                </Button>
-              </div>
-              
               {/* Mobile Header */}
               <div className="p-4 border-b border-gray-100 lg:hidden">
                 <div className="flex items-center justify-between">
@@ -120,15 +106,15 @@ export function JobSeekerLayout() {
                     <Link
                       key={item.path}
                       to={item.path}
+                      onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all mb-1 ${
                         isActive
                           ? 'bg-blue-500 text-white'
                           : 'text-gray-700 hover:bg-blue-50'
-                      } ${!sidebarOpen && 'justify-center'}`}
-                      title={!sidebarOpen ? item.label : ''}
+                      }`}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
-                      {sidebarOpen && <span className="font-medium">{item.label}</span>}
+                      <span className="font-medium">{item.label}</span>
                     </Link>
                   );
                 })}
