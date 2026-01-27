@@ -53,8 +53,8 @@ export function JobSeekerDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl mb-2 text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's your job search overview</p>
+        <h1 className="text-2xl sm:text-3xl mb-2 text-gray-900">Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600">Welcome back! Here's your job search overview</p>
       </div>
 
       {/* Stats Grid */}
@@ -116,14 +116,14 @@ export function JobSeekerDashboard() {
       {activityData.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Application Activity</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Application Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
               <LineChart data={activityData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis dataKey="name" tick={{fontSize: 12}} />
+                <YAxis tick={{fontSize: 12}} />
                 <Tooltip />
                 <Line type="monotone" dataKey="applications" stroke="#3b82f6" strokeWidth={2} />
               </LineChart>
@@ -133,26 +133,26 @@ export function JobSeekerDashboard() {
       )}
 
       {/* Quick Actions & Recent Applications */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 sm:space-y-3">
             <Link to="/job-seeker/jobs">
-              <Button className="w-full justify-start" variant="outline">
+              <Button className="w-full justify-start text-sm" variant="outline">
                 <Briefcase className="w-4 h-4 mr-2" />
                 Browse New Jobs
               </Button>
             </Link>
             <Link to="/job-seeker/resume">
-              <Button className="w-full justify-start" variant="outline">
+              <Button className="w-full justify-start text-sm" variant="outline">
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Update Resume
               </Button>
             </Link>
             <Link to="/job-seeker/applications">
-              <Button className="w-full justify-start" variant="outline">
+              <Button className="w-full justify-start text-sm" variant="outline">
                 <Eye className="w-4 h-4 mr-2" />
                 View All Applications
               </Button>
@@ -162,12 +162,12 @@ export function JobSeekerDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Applications</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Recent Applications</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentApplications && recentApplications.filter(app => app.job).length > 0 ? (
-                recentApplications.filter(app => app.job).map((app: any) => {
+            <div className="space-y-3 sm:space-y-4">
+              {recentApplications && recentApplications.filter((app: any) => app.job).length > 0 ? (
+                recentApplications.filter((app: any) => app.job).map((app: any) => {
                   const statusColors: Record<string, string> = {
                     pending: 'bg-gray-100 text-gray-800',
                     viewed: 'bg-blue-100 text-blue-800',
@@ -177,19 +177,19 @@ export function JobSeekerDashboard() {
                     rejected: 'bg-red-100 text-red-800',
                   };
                   return (
-                    <div key={app._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-sm">{app.job.title}</p>
-                        <p className="text-xs text-gray-500">{app.job.companyName}</p>
+                    <div key={app._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-gray-50 rounded-lg gap-2 sm:gap-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">{app.job.title}</p>
+                        <p className="text-xs text-gray-500 truncate">{app.job.companyName}</p>
                       </div>
-                      <span className={`text-xs px-2 py-1 rounded ${statusColors[app.status] || 'bg-gray-100 text-gray-800'}`}>
+                      <span className={`text-xs px-2 py-1 rounded whitespace-nowrap self-start sm:self-auto ${statusColors[app.status] || 'bg-gray-100 text-gray-800'}`}>
                         {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                       </span>
                     </div>
                   );
                 })
               ) : (
-                <p className="text-center text-gray-500 py-8">No recent applications</p>
+                <p className="text-center text-gray-500 py-8 text-sm">No recent applications</p>
               )}
             </div>
           </CardContent>
