@@ -24,7 +24,7 @@ import { CompanyProfile } from '@/app/pages/employer/CompanyProfile';
 import { JobSeekerLayout } from '@/app/layouts/JobSeekerLayout';
 import { EmployerLayout } from '@/app/layouts/EmployerLayout';
 
-// Protected Route Wrapper
+
 import { ProtectedRoute } from '@/app/components/ProtectedRoute';
 import { NotFound } from '@/app/pages/NotFound';
 import { RouteErrorBoundary } from '@/app/components/RouteErrorBoundary';
