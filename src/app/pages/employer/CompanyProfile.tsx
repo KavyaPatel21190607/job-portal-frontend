@@ -15,7 +15,7 @@ export function CompanyProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [companyLogoFile, setCompanyLogoFile] = useState<File | null>(null);
-  const [error, setError] = useState('');
+  const [_error, setError] = useState('');
 
   // Ref for file input
   const companyLogoInputRef = useRef<HTMLInputElement>(null);
@@ -96,7 +96,7 @@ export function CompanyProfile() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl mb-2 text-gray-900">Company Profile</h1>
+        <h1 className="text-2xl sm:text-3xl mb-2 text-gray-900">Company Profile</h1>
         <p className="text-gray-600">Manage your company information</p>
       </div>
 
@@ -152,7 +152,7 @@ export function CompanyProfile() {
               <Input 
                 id="companyName" 
                 name="companyName"
-                defaultValue={profile?.companyDetails?.companyName || user?.name} 
+                defaultValue={(profile?.companyDetails as any)?.companyName || user?.name} 
               />
             </div>
             <div className="space-y-2">
