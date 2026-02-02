@@ -237,7 +237,7 @@ export function JobDetails() {
                 <h3 className="text-base sm:text-lg font-semibold mb-3">Required Skills</h3>
                 <div className="flex flex-wrap gap-2 overflow-hidden">
                   {(job.requiredSkills || job.skills || []).map((skill, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs sm:text-sm py-1 px-2 sm:px-3 break-all max-w-full">
+                    <Badge key={idx} variant="outline" className="text-xs sm:text-sm py-1 px-2 sm:px-3 whitespace-normal break-words">
                       {skill}
                     </Badge>
                   ))}
