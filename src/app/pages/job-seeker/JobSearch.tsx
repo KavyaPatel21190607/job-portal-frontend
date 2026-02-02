@@ -1,68 +1,62 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
 import { Badge } from '@/app/components/ui/badge';
-import { Separator } from '@/app/components/ui/separator';
-import { 
-  ArrowLeft, 
-  MapPin, 
-  DollarSign, 
-  Briefcase, 
-  Clock, 
-  Building, 
-  Users, 
-  Calendar,
-  Loader2 
-} from 'lucide-react';
+import { Search, MapPin, DollarSign, Briefcase, Clock, Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
 import jobService, { type Job } from '@/services/jobService';
 import applicationService from '@/services/applicationService';
+import { useNavigate } from 'react-router';
 
-export function JobDetails() {
-  const { jobId } = useParams<{ jobId: string }>();
+export function JobSearch() {
   const navigate = useNavigate();
-  const [job, setJob] = useState<Job | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [jobType, setJobType] = useState('all');
+  const [workType, setWorkType] = useState('all');
+  const [experienceLevel] = useState('all');
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [applying, setApplying] = useState(false);
   const [error, setError] = useState('');
+  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (jobId) {
-      fetchJobDetails();
-    }
-  }, [jobId]);
+    fetchJobs();
+  }, [searchTerm, jobType, workType, experienceLevel]);
 
-  const fetchJobDetails = async () => {
+  const fetchJobs = async () => {
     try {
       setLoading(true);
-      const response = await jobService.getJobById(jobId!);
-      console.log('Job Details:', response);
-      console.log('Requirements:', response.requirements);
-      console.log('Responsibilities:', response.responsibilities);
-      console.log('Benefits:', response.benefits);
-      setJob(response);
+      const filters: any = {};
+      
+      if (searchTerm) filters.search = searchTerm;
+      if (jobType !== 'all') filters.jobType = jobType;
+      if (workType !== 'all') filters.workType = workType;
+      if (experienceLevel !== 'all') filters.experienceLevel = experienceLevel;
+
+      const response = await jobService.getAllJobs(filters);
+      setJobs(response.data);
       setError('');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch job details');
+      setError(err.response?.data?.message || 'Failed to fetch jobs');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleApply = async () => {
+  const handleApply = async (jobId: string) => {
     try {
-      setApplying(true);
-      await applicationService.applyForJob(jobId!);
+      setApplyingJobId(jobId);
+      await applicationService.applyForJob(jobId);
       alert('Application submitted successfully!');
-      navigate('/job-seeker/applications');
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to apply for job');
     } finally {
-      setApplying(false);
+      setApplyingJobId(null);
     }
   };
 
-  const formatSalary = (min: number, max: number, _currency: string) => {
+  const formatSalary = (min: number, max: number) => {
     return `₹ ${(min / 100000).toFixed(1)} - ${(max / 100000).toFixed(1)} LPA`;
   };
 
@@ -78,257 +72,159 @@ export function JobDetails() {
     return `Posted on ${jobDate.toLocaleDateString()}`;
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-      </div>
-    );
-  }
-
-  if (error || !job) {
-    return (
-      <div className="space-y-6">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/job-seeker/jobs')}
-          className="mb-4"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Jobs
-        </Button>
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <p className="text-red-600">{error || 'Job not found'}</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4 sm:space-y-6 overflow-x-hidden px-3 sm:px-0">
-      {/* Back Button */}
-      <Button 
-        variant="ghost" 
-        onClick={() => navigate('/job-seeker/jobs')}
-        className="mb-2 sm:mb-4 text-sm sm:text-base"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Jobs
-      </Button>
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 overflow-x-hidden">
+      <div className="text-center sm:text-left px-4 sm:px-0">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-gray-900">Find Jobs</h1>
+        <p className="text-xs sm:text-sm md:text-base text-gray-600">Discover opportunities that match your skills</p>
+      </div>
 
-      {/* Job Header */}
-      <Card>
-        <CardHeader className="pb-3 sm:pb-6">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-2xl sm:text-3xl mb-2 break-words leading-tight">{job.title}</CardTitle>
-              <div className="flex items-center gap-2 text-base sm:text-xl text-gray-600 mb-3 sm:mb-4 min-w-0">
-                <Building className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="font-medium break-words flex-1">{job.companyName}</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
-                  {job.jobType}
-                </Badge>
-                <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs sm:text-sm">
-                  {job.workType}
-                </Badge>
-                <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs sm:text-sm">
-                  {job.experienceLevel}
-                </Badge>
-              </div>
+      {/* Search and Filters */}
+      <Card className="shadow-sm mx-3 sm:mx-0">
+        <CardContent className="p-4 sm:p-4 md:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
+            <div className="relative sm:col-span-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+              <Input
+                placeholder="Search jobs..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 text-sm sm:text-sm md:text-base h-11 sm:h-10"
+              />
             </div>
-            <Button 
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-700 w-full lg:w-auto text-sm sm:text-base"
-              onClick={handleApply}
-              disabled={applying}
-            >
-              {applying ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Applying...
-                </>
-              ) : (
-                <>
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Apply Now
-                </>
-              )}
-            </Button>
+            <Select value={jobType} onValueChange={setJobType}>
+              <SelectTrigger className="text-sm sm:text-sm md:text-base h-11 sm:h-10">
+                <SelectValue placeholder="Job Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="full-time">Full-time</SelectItem>
+                <SelectItem value="part-time">Part-time</SelectItem>
+                <SelectItem value="contract">Contract</SelectItem>
+                <SelectItem value="internship">Internship</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={workType} onValueChange={setWorkType}>
+              <SelectTrigger className="text-sm sm:text-sm md:text-base h-11 sm:h-10">
+                <SelectValue placeholder="Work Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Locations</SelectItem>
+                <SelectItem value="remote">Remote</SelectItem>
+                <SelectItem value="onsite">Onsite</SelectItem>
+                <SelectItem value="hybrid">Hybrid</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="flex items-center gap-2 text-gray-600">
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-500">Location</p>
-                <p className="font-medium text-sm sm:text-base break-words">{job.location}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-500">Salary</p>
-                <p className="font-medium text-sm sm:text-base break-words">
-                  {formatSalary(job.salaryRange.min, job.salaryRange.max, job.salaryRange.currency)}
+        </CardContent>
+      </Card>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-8 sm:py-12">
+          <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-blue-600" />
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <Card className="border-red-200 bg-red-50 mx-3 sm:mx-0">
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-sm text-red-600">{error}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Job Listings */}
+      {!loading && !error && (
+        <div className="space-y-3 sm:space-y-4">
+          {jobs.length === 0 ? (
+            <Card className="mx-3 sm:mx-0">
+              <CardContent className="p-6">
+                <p className="text-center text-sm md:text-base text-gray-500 py-8">
+                  No jobs found. Try adjusting your search filters.
                 </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-500">Experience</p>
-                <p className="font-medium text-sm sm:text-base break-words">{job.experienceLevel}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <Clock className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-500">Posted</p>
-                <p className="font-medium text-sm sm:text-base break-words">{formatDate(job.createdAt)}</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Job Description */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg sm:text-xl">Job Description</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line leading-relaxed">{job.description}</p>
-        </CardContent>
-      </Card>
-
-      {/* Requirements */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg sm:text-xl">Requirements</CardTitle>
-        </CardHeader>
-        <CardContent className="overflow-hidden">
-          {job.requirements && (
-            <>
-              {Array.isArray(job.requirements) ? (
-                <ul className="space-y-2 mb-4">
-                  {job.requirements.map((req, idx) => (
-                    <li key={idx} className="flex items-start gap-2 min-w-0">
-                      <span className="text-blue-600 mt-1 flex-shrink-0">•</span>
-                      <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{req}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line leading-relaxed mb-4 break-words">{job.requirements}</p>
-              )}
-            </>
+              </CardContent>
+            </Card>
+          ) : (
+            jobs.filter(job => job != null).map((job) => (
+              <Card key={job._id} className="hover:shadow-lg transition-all duration-200 mx-3 sm:mx-0 shadow-sm overflow-hidden">
+                <CardHeader className="p-4 sm:p-5 md:p-6 pb-3">
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base sm:text-lg md:text-xl mb-1.5 leading-tight break-words">{job.title}</CardTitle>
+                      <p className="text-gray-600 font-medium text-sm sm:text-sm md:text-base mb-2 break-words">{job.companyName}</p>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm px-2.5 py-1">
+                        {job.jobType}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs sm:text-sm px-2.5 py-1">
+                        {job.workType}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-5 md:p-6 pt-0">
+                  <div className="grid grid-cols-1 gap-2 mb-3">
+                    <div className="flex items-center gap-2 text-gray-600 min-w-0">
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm truncate flex-1 min-w-0">{job.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600 min-w-0">
+                      <DollarSign className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm break-words flex-1 min-w-0">
+                        {formatSalary(job.salaryRange.min, job.salaryRange.max)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600 min-w-0">
+                      <Clock className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm break-words flex-1 min-w-0">{formatDate(job.createdAt)}</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-3 line-clamp-2 text-sm leading-relaxed break-words">{job.description}</p>
+                  {job.requiredSkills && job.requiredSkills.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3 overflow-hidden">
+                    {job.requiredSkills.slice(0, 5).map((skill, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs px-2 py-1 break-all max-w-full">{skill}</Badge>
+                    ))}
+                    {job.requiredSkills.length > 5 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1 break-all">+{job.requiredSkills.length - 5} more</Badge>
+                    )}
+                  </div>
+                  )}
+                  <div className="flex flex-col gap-2.5">
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 w-full text-sm font-medium h-11 touch-manipulation"
+                      onClick={() => handleApply(job._id)}
+                      disabled={applyingJobId === job._id}
+                    >
+                      {applyingJobId === job._id ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <span>Applying...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Briefcase className="w-4 h-4 mr-2" />
+                          <span>Apply Now</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate(`/job-seeker/jobs/${job._id}`)}
+                      className="w-full text-sm font-medium h-11 touch-manipulation hover:bg-gray-50 active:bg-gray-100"
+                    >
+                      View Details
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
           )}
-          
-          {(job.requiredSkills || job.skills) && (job.requiredSkills || job.skills || []).length > 0 && (
-            <>
-              {job.requirements && <Separator className="my-4" />}
-              
-              <div className="overflow-hidden">
-                <h3 className="text-base sm:text-lg font-semibold mb-3">Required Skills</h3>
-                <div className="flex flex-wrap gap-2 overflow-hidden">
-                  {(job.requiredSkills || job.skills || []).map((skill, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs sm:text-sm py-1 px-2 sm:px-3 break-all max-w-full">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Responsibilities */}
-      {job.responsibilities && job.responsibilities.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Responsibilities</CardTitle>
-          </CardHeader>
-          <CardContent className="overflow-hidden">
-            <ul className="space-y-2">
-              {job.responsibilities.map((responsibility, idx) => (
-                <li key={idx} className="flex items-start gap-2 min-w-0">
-                  <span className="text-blue-600 mt-1 flex-shrink-0">•</span>
-                  <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{responsibility}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        </div>
       )}
-
-      {/* Benefits */}
-      {job.benefits && job.benefits.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Benefits</CardTitle>
-          </CardHeader>
-          <CardContent className="overflow-hidden">
-            <ul className="space-y-2">
-              {job.benefits.map((benefit, idx) => (
-                <li key={idx} className="flex items-start gap-2 min-w-0">
-                  <span className="text-blue-600 mt-1 flex-shrink-0">✓</span>
-                  <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Application Deadline */}
-      {job.closingDate && (
-        <Card className="border-amber-200 bg-amber-50">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-amber-700 min-w-0">
-              <Calendar className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium text-sm sm:text-base break-words flex-1">
-                Application Deadline: {new Date(job.closingDate).toLocaleDateString()}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Apply Button (Bottom) */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardContent className="pt-4 sm:pt-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Interested in this position?</h3>
-              <p className="text-sm sm:text-base text-gray-600">Submit your application now</p>
-            </div>
-            <Button 
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
-              onClick={handleApply}
-              disabled={applying}
-            >
-              {applying ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Applying...
-                </>
-              ) : (
-                <>
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Apply Now
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
