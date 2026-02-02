@@ -93,7 +93,7 @@ export function JobSearch() {
               />
             </div>
             <Select value={jobType} onValueChange={setJobType}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder="Job Type" />
               </SelectTrigger>
               <SelectContent>
@@ -105,7 +105,7 @@ export function JobSearch() {
               </SelectContent>
             </Select>
             <Select value={workType} onValueChange={setWorkType}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder="Work Type" />
               </SelectTrigger>
               <SelectContent>
@@ -141,7 +141,7 @@ export function JobSearch() {
           {jobs.length === 0 ? (
             <Card>
               <CardContent className="pt-6">
-                <p className="text-center text-gray-500 py-8">
+                <p className="text-center text-sm sm:text-base text-gray-500 py-8">
                   No jobs found. Try adjusting your search filters.
                 </p>
               </CardContent>
@@ -156,10 +156,10 @@ export function JobSearch() {
                       <p className="text-gray-600 font-medium text-sm sm:text-base truncate">{job.companyName}</p>
                     </div>
                     <div className="flex gap-2 flex-wrap">
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
                         {job.jobType}
                       </Badge>
-                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
+                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs sm:text-sm">
                         {job.workType}
                       </Badge>
                     </div>
@@ -186,27 +186,27 @@ export function JobSearch() {
                   {job.requiredSkills && job.requiredSkills.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {job.requiredSkills.slice(0, 5).map((skill, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">{skill}</Badge>
+                      <Badge key={idx} variant="outline" className="text-xs sm:text-sm">{skill}</Badge>
                     ))}
                     {job.requiredSkills.length > 5 && (
-                      <Badge variant="outline" className="text-xs">+{job.requiredSkills.length - 5} more</Badge>
+                      <Badge variant="outline" className="text-xs sm:text-sm">+{job.requiredSkills.length - 5} more</Badge>
                     )}
                   </div>
                   )}
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button 
-                      className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto text-sm"
+                      className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto text-sm sm:text-base"
                       onClick={() => handleApply(job._id)}
                       disabled={applyingJobId === job._id}
                     >
                       {applyingJobId === job._id ? (
                         <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2 animate-spin" />
                           Applying...
                         </>
                       ) : (
                         <>
-                          <Briefcase className="w-4 h-4 mr-2" />
+                          <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                           Apply Now
                         </>
                       )}
@@ -214,7 +214,7 @@ export function JobSearch() {
                     <Button 
                       variant="outline"
                       onClick={() => navigate(`/job-seeker/jobs/${job._id}`)}
-                      className="w-full sm:w-auto text-sm"
+                      className="w-full sm:w-auto text-sm sm:text-base"
                     >
                       View Details
                     </Button>
