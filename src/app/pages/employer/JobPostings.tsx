@@ -109,37 +109,37 @@ export function JobPostings() {
           ) : (
             jobs.filter(job => job != null).map((job) => (
               <Card key={job._id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>{job.location}</span>
-                        <span>•</span>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-lg sm:text-xl mb-1 sm:mb-2 truncate">{job.title}</CardTitle>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                        <span className="truncate">{job.location}</span>
+                        <span className="hidden sm:inline">•</span>
                         <span>{job.jobType}</span>
-                        <span>•</span>
-                        <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="text-xs">Posted {new Date(job.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <Badge className={job.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}>
+                    <Badge className={`${job.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'} text-xs whitespace-nowrap self-start sm:self-auto`}>
                       {job.status}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 line-clamp-2">{job.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                       <Users className="w-4 h-4" />
                       <span>{job.applicants?.length || 0} applications</span>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleViewJob(job._id)}>
-                        <Eye className="w-4 h-4 mr-2" />
+                    <div className="flex flex-wrap flex-wrap gap-2">
+                      <Button size="sm" variant="outline" onClick={() => handleViewJob(job._id)} className="text-xs sm:text-sm flex-1 sm:flex-initial">
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         View
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleEditJob(job)}>
-                        <Edit className="w-4 h-4 mr-2" />
+                      <Button size="sm" variant="outline" onClick={() => handleEditJob(job)} className="text-xs sm:text-sm flex-1 sm:flex-initial">
+                        <Edit className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         Edit
                       </Button>
                       <Button 
@@ -147,11 +147,12 @@ export function JobPostings() {
                         variant="outline"
                         onClick={() => handleDelete(job._id)}
                         disabled={deletingId === job._id}
+                        className="text-xs sm:text-sm w-full sm:w-auto"
                       >
                         {deletingId === job._id ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                         ) : (
-                          <Trash2 className="w-4 h-4 mr-2" />
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         )}
                         Delete
                       </Button>
