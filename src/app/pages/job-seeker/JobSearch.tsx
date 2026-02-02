@@ -73,27 +73,27 @@ export function JobSearch() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 text-gray-900">Find Jobs</h1>
-        <p className="text-sm sm:text-base text-gray-600">Discover opportunities that match your skills</p>
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 px-2 sm:px-0">
+      <div className="text-center sm:text-left">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2 text-gray-900">Find Jobs</h1>
+        <p className="text-xs sm:text-sm md:text-base text-gray-600">Discover opportunities that match your skills</p>
       </div>
 
       {/* Search and Filters */}
-      <Card>
-        <CardContent className="pt-4 sm:pt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <Card className="shadow-sm">
+        <CardContent className="p-3 sm:p-4 md:pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
             <div className="relative sm:col-span-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+              <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <Input
-                placeholder="Search by title, company, or skills..."
+                placeholder="Search jobs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 sm:pl-10 text-sm sm:text-base"
+                className="pl-8 sm:pl-9 md:pl-10 text-xs sm:text-sm md:text-base h-9 sm:h-10"
               />
             </div>
             <Select value={jobType} onValueChange={setJobType}>
-              <SelectTrigger className="text-sm sm:text-base">
+              <SelectTrigger className="text-xs sm:text-sm md:text-base h-9 sm:h-10">
                 <SelectValue placeholder="Job Type" />
               </SelectTrigger>
               <SelectContent>
@@ -105,7 +105,7 @@ export function JobSearch() {
               </SelectContent>
             </Select>
             <Select value={workType} onValueChange={setWorkType}>
-              <SelectTrigger className="text-sm sm:text-base">
+              <SelectTrigger className="text-xs sm:text-sm md:text-base h-9 sm:h-10">
                 <SelectValue placeholder="Work Type" />
               </SelectTrigger>
               <SelectContent>
@@ -121,100 +121,100 @@ export function JobSearch() {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex justify-center items-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <div className="flex justify-center items-center py-8 sm:py-12">
+          <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-blue-600" />
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+        <Card className="border-red-200 bg-red-50 mx-2 sm:mx-0">
+          <CardContent className="p-3 sm:pt-6">
+            <p className="text-xs sm:text-sm text-red-600">{error}</p>
           </CardContent>
         </Card>
       )}
 
       {/* Job Listings */}
       {!loading && !error && (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {jobs.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-center text-sm sm:text-base text-gray-500 py-8">
+            <Card className="mx-2 sm:mx-0">
+              <CardContent className="p-4 sm:pt-6">
+                <p className="text-center text-xs sm:text-sm md:text-base text-gray-500 py-6 sm:py-8">
                   No jobs found. Try adjusting your search filters.
                 </p>
               </CardContent>
             </Card>
           ) : (
             jobs.filter(job => job != null).map((job) => (
-              <Card key={job._id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3 sm:pb-4">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <Card key={job._id} className="hover:shadow-lg transition-all duration-200 mx-2 sm:mx-0 shadow-sm">
+                <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg sm:text-xl mb-1 truncate">{job.title}</CardTitle>
-                      <p className="text-gray-600 font-medium text-sm sm:text-base truncate">{job.companyName}</p>
+                      <CardTitle className="text-base sm:text-lg md:text-xl mb-1 truncate leading-tight">{job.title}</CardTitle>
+                      <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base truncate">{job.companyName}</p>
                     </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
+                    <div className="flex gap-1.5 sm:gap-2 flex-wrap">
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-[10px] sm:text-xs md:text-sm px-2 py-0.5">
                         {job.jobType}
                       </Badge>
-                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs sm:text-sm">
+                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-[10px] sm:text-xs md:text-sm px-2 py-0.5">
                         {job.workType}
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="w-4 h-4 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm truncate">{job.location}</span>
+                <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-gray-600">
+                      <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[11px] sm:text-xs md:text-sm truncate">{job.location}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <DollarSign className="w-4 h-4 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-gray-600">
+                      <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[11px] sm:text-xs md:text-sm">
                         {formatSalary(job.salaryRange.min, job.salaryRange.max)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="w-4 h-4 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm">{formatDate(job.createdAt)}</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-gray-600">
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[11px] sm:text-xs md:text-sm">{formatDate(job.createdAt)}</span>
                     </div>
                   </div>
-                  <p className="text-gray-700 mb-4 line-clamp-2 text-sm sm:text-base">{job.description}</p>
+                  <p className="text-gray-700 mb-3 sm:mb-4 line-clamp-2 text-xs sm:text-sm md:text-base leading-relaxed">{job.description}</p>
                   {job.requiredSkills && job.requiredSkills.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                     {job.requiredSkills.slice(0, 5).map((skill, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs sm:text-sm">{skill}</Badge>
+                      <Badge key={idx} variant="outline" className="text-[10px] sm:text-xs md:text-sm px-2 py-0.5">{skill}</Badge>
                     ))}
                     {job.requiredSkills.length > 5 && (
-                      <Badge variant="outline" className="text-xs sm:text-sm">+{job.requiredSkills.length - 5} more</Badge>
+                      <Badge variant="outline" className="text-[10px] sm:text-xs md:text-sm px-2 py-0.5">+{job.requiredSkills.length - 5} more</Badge>
                     )}
                   </div>
                   )}
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button 
-                      className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto text-sm sm:text-base"
+                      className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 w-full sm:w-auto text-xs sm:text-sm md:text-base h-9 sm:h-10 touch-manipulation"
                       onClick={() => handleApply(job._id)}
                       disabled={applyingJobId === job._id}
                     >
                       {applyingJobId === job._id ? (
                         <>
-                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2 animate-spin" />
-                          Applying...
+                          <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+                          <span className="text-xs sm:text-sm md:text-base">Applying...</span>
                         </>
                       ) : (
                         <>
-                          <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                          Apply Now
+                          <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                          <span className="text-xs sm:text-sm md:text-base">Apply Now</span>
                         </>
                       )}
                     </Button>
                     <Button 
                       variant="outline"
                       onClick={() => navigate(`/job-seeker/jobs/${job._id}`)}
-                      className="w-full sm:w-auto text-sm sm:text-base"
+                      className="w-full sm:w-auto text-xs sm:text-sm md:text-base h-9 sm:h-10 touch-manipulation hover:bg-gray-50 active:bg-gray-100"
                     >
                       View Details
                     </Button>
