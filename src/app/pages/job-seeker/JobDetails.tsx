@@ -107,12 +107,12 @@ export function JobDetails() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden px-3 sm:px-0">
       {/* Back Button */}
       <Button 
         variant="ghost" 
         onClick={() => navigate('/job-seeker/jobs')}
-        className="mb-4"
+        className="mb-2 sm:mb-4 text-sm sm:text-base"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Jobs
@@ -123,10 +123,10 @@ export function JobDetails() {
         <CardHeader className="pb-3 sm:pb-6">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-2xl sm:text-3xl mb-2 truncate">{job.title}</CardTitle>
-              <div className="flex items-center gap-2 text-base sm:text-xl text-gray-600 mb-3 sm:mb-4">
+              <CardTitle className="text-2xl sm:text-3xl mb-2 break-words leading-tight">{job.title}</CardTitle>
+              <div className="flex items-center gap-2 text-base sm:text-xl text-gray-600 mb-3 sm:mb-4 min-w-0">
                 <Building className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="font-medium truncate">{job.companyName}</span>
+                <span className="font-medium break-words flex-1">{job.companyName}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
@@ -166,14 +166,14 @@ export function JobDetails() {
               <MapPin className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-gray-500">Location</p>
-                <p className="font-medium text-sm sm:text-base truncate">{job.location}</p>
+                <p className="font-medium text-sm sm:text-base break-words">{job.location}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-gray-500">Salary</p>
-                <p className="font-medium text-sm sm:text-base truncate">
+                <p className="font-medium text-sm sm:text-base break-words">
                   {formatSalary(job.salaryRange.min, job.salaryRange.max, job.salaryRange.currency)}
                 </p>
               </div>
@@ -182,14 +182,14 @@ export function JobDetails() {
               <Users className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-gray-500">Experience</p>
-                <p className="font-medium text-sm sm:text-base truncate">{job.experienceLevel}</p>
+                <p className="font-medium text-sm sm:text-base break-words">{job.experienceLevel}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <Clock className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-gray-500">Posted</p>
-                <p className="font-medium text-sm sm:text-base truncate">{formatDate(job.createdAt)}</p>
+                <p className="font-medium text-sm sm:text-base break-words">{formatDate(job.createdAt)}</p>
               </div>
             </div>
           </div>
@@ -211,20 +211,20 @@ export function JobDetails() {
         <CardHeader>
           <CardTitle className="text-lg sm:text-xl">Requirements</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-hidden">
           {job.requirements && (
             <>
               {Array.isArray(job.requirements) ? (
                 <ul className="space-y-2 mb-4">
                   {job.requirements.map((req, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-blue-600 mt-1">•</span>
-                      <span className="text-sm sm:text-base text-gray-700">{req}</span>
+                    <li key={idx} className="flex items-start gap-2 min-w-0">
+                      <span className="text-blue-600 mt-1 flex-shrink-0">•</span>
+                      <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{req}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line leading-relaxed mb-4">{job.requirements}</p>
+                <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line leading-relaxed mb-4 break-words">{job.requirements}</p>
               )}
             </>
           )}
@@ -233,11 +233,11 @@ export function JobDetails() {
             <>
               {job.requirements && <Separator className="my-4" />}
               
-              <div>
+              <div className="overflow-hidden">
                 <h3 className="text-base sm:text-lg font-semibold mb-3">Required Skills</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 overflow-hidden">
                   {(job.requiredSkills || job.skills || []).map((skill, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs sm:text-sm py-1 px-2 sm:px-3">
+                    <Badge key={idx} variant="outline" className="text-xs sm:text-sm py-1 px-2 sm:px-3 break-all max-w-full">
                       {skill}
                     </Badge>
                   ))}
@@ -254,12 +254,12 @@ export function JobDetails() {
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl">Responsibilities</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-hidden">
             <ul className="space-y-2">
               {job.responsibilities.map((responsibility, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <span className="text-sm sm:text-base text-gray-700">{responsibility}</span>
+                <li key={idx} className="flex items-start gap-2 min-w-0">
+                  <span className="text-blue-600 mt-1 flex-shrink-0">•</span>
+                  <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{responsibility}</span>
                 </li>
               ))}
             </ul>
@@ -273,12 +273,12 @@ export function JobDetails() {
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl">Benefits</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-hidden">
             <ul className="space-y-2">
               {job.benefits.map((benefit, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span className="text-sm sm:text-base text-gray-700">{benefit}</span>
+                <li key={idx} className="flex items-start gap-2 min-w-0">
+                  <span className="text-blue-600 mt-1 flex-shrink-0">✓</span>
+                  <span className="text-sm sm:text-base text-gray-700 break-words flex-1">{benefit}</span>
                 </li>
               ))}
             </ul>
@@ -290,9 +290,9 @@ export function JobDetails() {
       {job.closingDate && (
         <Card className="border-amber-200 bg-amber-50">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-amber-700">
-              <Calendar className="w-5 h-5" />
-              <span className="font-medium">
+            <div className="flex items-center gap-2 text-amber-700 min-w-0">
+              <Calendar className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium text-sm sm:text-base break-words flex-1">
                 Application Deadline: {new Date(job.closingDate).toLocaleDateString()}
               </span>
             </div>
